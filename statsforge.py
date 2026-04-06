@@ -1,23 +1,27 @@
+import os
+import sys
 import random
-from flask import Flask, request, jsonify, render_template
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
-app = Flask(__name__)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["200 per minute"],
-)
+from flask import Blueprint, request, jsonify, render_template
+
+try:
+    from shared.limiter import limiter
+except ImportError:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+    limiter = Limiter(get_remote_address, storage_uri="memory://")
+
+bp = Blueprint("statsforge", __name__, template_folder="templates")
 
 
-@app.route("/")
+@bp.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("statsforge/index.html")
 
 
-@app.route("/api/calculate", methods=["POST"])
+@bp.route("/api/calculate", methods=["POST"])
 @limiter.limit("60 per minute")
 def calculate():
     data = request.get_json(force=True)
@@ -75,4 +79,8 @@ def calculate():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    from flask import Flask
+    standalone = Flask(__name__)
+    standalone.register_blueprint(bp, url_prefix="/")
+    limiter.init_app(standalone)
+    standalone.run(debug=True, port=5000)
