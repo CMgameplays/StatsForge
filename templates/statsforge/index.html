@@ -6,216 +6,309 @@
   <title>StatsForge — CMG Forge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #08090f;
-      --surface: #0e1018;
-      --surface2: #13151f;
-      --surface3: #191c28;
-      --border: #1c1f30;
-      --border-hi: #2c3050;
-      --text: #c8d0e8;
-      --text-dim: #4e5570;
-      --text-bright: #e6eeff;
-      --accent: #a855f7;
-      --accent-20: rgba(168,85,247,0.20);
-      --accent-08: rgba(168,85,247,0.08);
-      --accent-glow: rgba(168,85,247,0.45);
-      --font-ui: 'Rajdhani', sans-serif;
+      --forge-bg:      #08090f;
+      --forge-surface: #0f1120;
+      --forge-purple:  #a855f7;
+      --forge-indigo:  #6366f1;
+      --forge-ember:   #f97316;
+      --forge-text:    #f1f5f9;
+      --forge-muted:   #64748b;
+      --forge-green:   #22c55e;
+      --font-head: 'Rajdhani', sans-serif;
       --font-mono: 'Share Tech Mono', monospace;
     }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-ui);
-      font-size: 15px;
+    html { height: 100%; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--forge-bg);
+      background-image:
+        linear-gradient(rgba(99,102,241,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: var(--forge-text);
+      font-family: var(--font-mono);
+      font-size: 14px;
       line-height: 1.5;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ── Header ── */
-    header {
+    /* ── Navbar ── */
+    .forge-nav {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 200;
+      height: 54px;
+      padding: 0 28px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      height: 52px;
-      padding: 0 24px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      justify-content: space-between;
+      background: rgba(8,9,15,0.92);
+      border-bottom: 1px solid rgba(99,102,241,0.18);
+      backdrop-filter: blur(12px);
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      background: var(--accent-20);
-      border: 1px solid var(--accent);
-      border-radius: 6px;
-    }
-
-    .logo svg { display: block; }
-
-    header h1 {
-      font-family: var(--font-ui);
-      font-size: 18px;
+    .nav-logo {
+      font-family: var(--font-head);
       font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--text-bright);
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      color: var(--forge-text);
+      text-decoration: none;
       text-transform: uppercase;
     }
 
-    .version-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--accent);
-      background: var(--accent-08);
-      border: 1px solid var(--accent-20);
-      border-radius: 4px;
-      padding: 2px 7px;
-      letter-spacing: 1px;
+    .nav-logo .forge-accent { color: var(--forge-ember); }
+
+    .nav-link {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--forge-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: var(--forge-text); }
+
+    /* ── Main wrapper ── */
+    .forge-main { flex: 1; display: flex; flex-direction: column; }
+
+    /* ── Tool title bar ── */
+    .tool-bar {
+      padding: 24px 32px 22px;
+      border-bottom: 1px solid rgba(99,102,241,0.12);
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
-    .header-sub {
-      margin-left: auto;
+    .tool-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(168,85,247,0.08);
+      border: 1px solid rgba(168,85,247,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+
+    .tool-title-group { display: flex; flex-direction: column; gap: 3px; }
+
+    .tool-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--forge-text);
+      line-height: 1;
+    }
+
+    .tool-desc {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
+      color: var(--forge-muted);
     }
 
-    /* ── Layout ── */
+    .tool-tag {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--forge-indigo);
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      padding: 3px 10px;
+      letter-spacing: 0.1em;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+
+    /* ── Two-column layout ── */
     .layout {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      min-height: calc(100vh - 52px);
+      grid-template-columns: 300px 1fr;
+      flex: 1;
     }
 
     /* ── Left Panel ── */
     .panel-left {
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 28px 24px 40px;
+      background: var(--forge-surface);
+      border-right: 1px solid rgba(99,102,241,0.12);
+      padding: 24px 20px 36px;
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
-    .sec {
-      font-family: var(--font-ui);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 2px;
+    .sec-head {
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 14px;
+      color: var(--forge-indigo);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(99,102,241,0.12);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .sec-line {
-      display: block;
-      height: 1px;
-      background: var(--border);
-      margin: 20px 0 20px;
+    .sec-head::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: var(--forge-indigo);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      flex-shrink: 0;
     }
+
+    .sec-gap { height: 20px; }
 
     /* ── Fields ── */
-    .fields { display: flex; flex-direction: column; gap: 14px; }
+    .fields { display: flex; flex-direction: column; gap: 12px; }
 
-    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
 
     .field label {
-      font-family: var(--font-ui);
-      font-size: 11px;
+      font-family: var(--font-head);
+      font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      color: var(--forge-muted);
     }
 
     .field input {
       font-family: var(--font-mono);
       font-size: 14px;
-      color: var(--text-bright);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 9px 12px;
+      color: var(--forge-text);
+      background: var(--forge-bg);
+      border: 1px solid rgba(99,102,241,0.25);
+      padding: 8px 12px;
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
       width: 100%;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+      -moz-appearance: textfield;
+      appearance: textfield;
     }
 
     .field input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-08);
+      border-color: rgba(99,102,241,0.65);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.08);
     }
 
     .field input::-webkit-inner-spin-button,
-    .field input::-webkit-outer-spin-button { opacity: 0.4; }
+    .field input::-webkit-outer-spin-button { opacity: 0.3; }
 
-    /* ── Button ── */
-    .btn-main {
-      margin-top: 24px;
+    /* ── Calculate Button ── */
+    .btn-calc {
+      margin-top: 20px;
       width: 100%;
       padding: 12px 0;
-      font-family: var(--font-ui);
+      font-family: var(--font-head);
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 2.5px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-bright);
-      background: var(--accent);
+      color: #08090f;
+      background: var(--forge-ember);
       border: none;
-      border-radius: 7px;
       cursor: pointer;
-      transition: opacity 0.15s, box-shadow 0.15s;
-      box-shadow: 0 0 18px var(--accent-glow);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      transition: filter 0.15s, opacity 0.15s;
+      position: relative;
     }
 
-    .btn-main:hover { opacity: 0.88; box-shadow: 0 0 28px var(--accent-glow); }
-    .btn-main:active { opacity: 0.75; }
-    .btn-main:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+    .btn-calc::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn-calc:hover { filter: brightness(1.1); }
+    .btn-calc:active { filter: brightness(0.9); }
+    .btn-calc:disabled { opacity: 0.38; cursor: not-allowed; filter: none; }
+
+    /* ── Error ── */
+    .error-msg {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #f87171;
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.2);
+      padding: 9px 12px;
+      display: none;
+      margin-top: 12px;
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+    .error-msg.visible { display: block; }
 
     /* ── Formula Breakdown ── */
-    .formula-section { display: none; }
+    .formula-section { display: none; margin-top: 20px; }
     .formula-section.visible { display: block; }
 
     .formula-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 14px 16px;
+      background: var(--forge-bg);
+      border: 1px solid rgba(99,102,241,0.18);
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
+      overflow-x: auto;
     }
 
     .formula-line {
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-dim);
+      font-size: 10.5px;
+      color: var(--forge-muted);
       white-space: pre;
     }
 
-    .formula-line.highlight { color: var(--accent); }
+    .formula-line.highlight { color: var(--forge-ember); }
 
     /* ── Right Panel ── */
     .panel-right {
-      background: var(--bg);
-      padding: 40px 40px 60px;
+      background: var(--forge-bg);
+      padding: 32px 36px 56px;
       display: flex;
       flex-direction: column;
-      gap: 36px;
+      gap: 24px;
+      position: relative;
     }
+
+    .panel-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(99,102,241,0.01) 3px,
+        rgba(99,102,241,0.01) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .panel-right > * { position: relative; z-index: 1; }
 
     /* ── Empty State ── */
     .empty-state {
@@ -225,223 +318,306 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      opacity: 0.35;
+      min-height: 260px;
+      opacity: 0.28;
     }
-
-    .empty-state svg { color: var(--accent); }
 
     .empty-state p {
       font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--forge-muted);
       text-transform: uppercase;
     }
 
     /* ── Results ── */
-    .results { display: none; flex-direction: column; gap: 28px; }
+    .results { display: none; flex-direction: column; gap: 20px; }
     .results.visible { display: flex; }
 
     .result-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
+    /* card border wrapper: 1px clip-path border trick */
+    .card-wrap {
+      padding: 1px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      background: rgba(99,102,241,0.2);
+    }
+
+    .card-wrap.accent { background: rgba(168,85,247,0.25); }
+
     .result-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px 20px;
+      background: var(--forge-surface);
+      clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+      padding: 16px 18px;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .result-card.accent-card {
-      border-color: var(--accent-20);
-      background: var(--surface2);
-    }
-
     .result-label {
-      font-family: var(--font-ui);
-      font-size: 11px;
-      font-weight: 600;
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      color: var(--forge-muted);
     }
 
     .result-value {
       font-family: var(--font-mono);
       font-size: 28px;
-      color: var(--text-bright);
+      color: var(--forge-text);
       line-height: 1.1;
     }
 
-    .result-card.accent-card .result-value { color: var(--accent); }
+    .card-wrap.accent .result-value { color: var(--forge-purple); }
 
     /* ── Chart ── */
+    .chart-wrap-outer {
+      padding: 1px;
+      background: rgba(99,102,241,0.15);
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+
     .chart-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px 24px;
+      background: var(--forge-surface);
+      clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 11px 100%, 0 calc(100% - 11px));
+      padding: 18px 22px;
     }
 
     .chart-header {
-      font-family: var(--font-ui);
-      font-size: 11px;
-      font-weight: 600;
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-dim);
-      margin-bottom: 16px;
+      letter-spacing: 0.22em;
+      color: var(--forge-muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-header::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: var(--forge-ember);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      flex-shrink: 0;
     }
 
     canvas { display: block; }
 
-    /* ── Error ── */
-    .error-msg {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #f87171;
-      background: rgba(248,113,113,0.08);
-      border: 1px solid rgba(248,113,113,0.25);
-      border-radius: 6px;
-      padding: 10px 14px;
-      display: none;
+    /* ── Footer ── */
+    .forge-footer {
+      background: var(--forge-bg);
+      border-top: 1px solid rgba(99,102,241,0.1);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .error-msg.visible { display: block; }
+
+    .forge-footer span,
+    .forge-footer a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--forge-muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .forge-footer a:hover { color: var(--forge-text); }
+
+    /* ── Hub back button ── */
+    .hub-back {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 300;
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--forge-muted);
+      background: rgba(15,17,32,0.9);
+      border: 1px solid rgba(99,102,241,0.2);
+      text-decoration: none;
+      padding: 7px 14px;
+      clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+      backdrop-filter: blur(8px);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .hub-back:hover {
+      color: var(--forge-text);
+      border-color: rgba(99,102,241,0.5);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="#a855f7" stroke-width="1.4" fill="none"/>
-        <path d="M8 5L11 6.75V10.25L8 12L5 10.25V6.75L8 5Z" fill="#a855f7" opacity="0.7"/>
-      </svg>
-    </div>
-    <h1>StatsForge</h1>
-    <span class="version-badge">v1.0</span>
-    <span class="header-sub">CMG Forge</span>
-  </header>
+  <!-- Navbar -->
+  <nav class="forge-nav">
+    <a href="https://cmgforge.com" class="nav-logo">CMG <span class="forge-accent">FORGE</span></a>
+    <a href="https://cmgforge.com/tools" class="nav-link">All Tools</a>
+  </nav>
 
-  <!-- Two-panel layout -->
-  <div class="layout">
+  <div class="forge-main">
 
-    <!-- Left Panel -->
-    <aside class="panel-left">
-      <p class="sec">Combat Parameters</p>
-
-      <div class="fields">
-        <div class="field">
-          <label for="attack">Attack</label>
-          <input type="number" id="attack" value="100" min="0" step="1" />
-        </div>
-        <div class="field">
-          <label for="defense">Defense</label>
-          <input type="number" id="defense" value="20" min="0" step="1" />
-        </div>
-      </div>
-
-      <span class="sec-line"></span>
-      <p class="sec">Critical Hit</p>
-
-      <div class="fields">
-        <div class="field">
-          <label for="crit_chance">Crit Chance %</label>
-          <input type="number" id="crit_chance" value="15" min="0" max="100" step="0.1" />
-        </div>
-        <div class="field">
-          <label for="crit_mult">Crit Multiplier</label>
-          <input type="number" id="crit_mult" value="2.0" min="1" step="0.1" />
-        </div>
-      </div>
-
-      <span class="sec-line"></span>
-      <p class="sec">Simulation</p>
-
-      <div class="fields">
-        <div class="field">
-          <label for="fire_rate">Fire Rate (hits/s)</label>
-          <input type="number" id="fire_rate" value="2" min="0.01" step="0.1" />
-        </div>
-        <div class="field">
-          <label for="n_hits">Simulate N Hits</label>
-          <input type="number" id="n_hits" value="20" min="1" max="500" step="1" />
-        </div>
-      </div>
-
-      <div class="error-msg" id="errorMsg"></div>
-
-      <button class="btn-main" id="calcBtn">Calculate</button>
-
-      <span class="sec-line"></span>
-
-      <!-- Formula Breakdown -->
-      <div class="formula-section" id="formulaSection">
-        <p class="sec">Formula Breakdown</p>
-        <div class="formula-box" id="formulaBox"></div>
-      </div>
-    </aside>
-
-    <!-- Right Panel -->
-    <main class="panel-right">
-
-      <!-- Empty state -->
-      <div class="empty-state" id="emptyState">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 4L42 14V34L24 44L6 34V14L24 4Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
-          <path d="M24 14L33 19V29L24 34L15 29V19L24 14Z" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/>
-          <circle cx="24" cy="24" r="3" fill="currentColor" opacity="0.6"/>
+    <!-- Tool title bar -->
+    <div class="tool-bar">
+      <div class="tool-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2L17 6V14L10 18L3 14V6L10 2Z" stroke="#a855f7" stroke-width="1.2" fill="none"/>
+          <path d="M10 6.5L13.5 8.5V12.5L10 14.5L6.5 12.5V8.5L10 6.5Z" fill="#a855f7" opacity="0.4"/>
+          <circle cx="10" cy="10" r="1.5" fill="#a855f7" opacity="0.8"/>
         </svg>
-        <p>Enter parameters and calculate</p>
       </div>
+      <div class="tool-title-group">
+        <h1 class="tool-title">StatsForge</h1>
+        <p class="tool-desc">Combat damage calculator. Input your stats, get real numbers.</p>
+      </div>
+      <span class="tool-tag">v1.0</span>
+    </div>
 
-      <!-- Results -->
-      <div class="results" id="results">
+    <!-- Two-panel layout -->
+    <div class="layout">
 
-        <div class="result-grid">
-          <div class="result-card accent-card">
-            <span class="result-label">Effective DPS</span>
-            <span class="result-value" id="valDps">—</span>
+      <!-- Left Panel -->
+      <aside class="panel-left">
+        <p class="sec-head">Combat Parameters</p>
+        <div class="fields">
+          <div class="field">
+            <label for="attack">Attack</label>
+            <input type="number" id="attack" value="100" min="0" step="1" />
           </div>
-          <div class="result-card accent-card">
-            <span class="result-label">Expected / Hit</span>
-            <span class="result-value" id="valExpected">—</span>
-          </div>
-          <div class="result-card">
-            <span class="result-label">Min Damage</span>
-            <span class="result-value" id="valMin">—</span>
-          </div>
-          <div class="result-card">
-            <span class="result-label">Max Damage</span>
-            <span class="result-value" id="valMax">—</span>
+          <div class="field">
+            <label for="defense">Defense</label>
+            <input type="number" id="defense" value="20" min="0" step="1" />
           </div>
         </div>
 
-        <div class="chart-wrap">
-          <p class="chart-header">Simulated Damage per Hit</p>
-          <canvas id="dmgChart" height="220"></canvas>
+        <div class="sec-gap"></div>
+        <p class="sec-head">Critical Hit</p>
+        <div class="fields">
+          <div class="field">
+            <label for="crit_chance">Crit Chance %</label>
+            <input type="number" id="crit_chance" value="15" min="0" max="100" step="0.1" />
+          </div>
+          <div class="field">
+            <label for="crit_mult">Crit Multiplier</label>
+            <input type="number" id="crit_mult" value="2.0" min="1" step="0.1" />
+          </div>
         </div>
 
-      </div>
-    </main>
+        <div class="sec-gap"></div>
+        <p class="sec-head">Simulation</p>
+        <div class="fields">
+          <div class="field">
+            <label for="fire_rate">Fire Rate (hits/s)</label>
+            <input type="number" id="fire_rate" value="2" min="0.01" step="0.1" />
+          </div>
+          <div class="field">
+            <label for="n_hits">Simulate N Hits</label>
+            <input type="number" id="n_hits" value="20" min="1" max="500" step="1" />
+          </div>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <button class="btn-calc" id="calcBtn">Calculate</button>
+
+        <!-- Formula Breakdown -->
+        <div class="formula-section" id="formulaSection">
+          <div class="sec-gap"></div>
+          <p class="sec-head">Formula Breakdown</p>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+      </aside>
+
+      <!-- Right Panel -->
+      <main class="panel-right">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+            <path d="M28 4L50 17V39L28 52L6 39V17L28 4Z" stroke="currentColor" stroke-width="1" fill="none"/>
+            <path d="M28 14L41 21.5V36.5L28 44L15 36.5V21.5L28 14Z" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/>
+            <path d="M28 22L34 25.5V32.5L28 36L22 32.5V25.5L28 22Z" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
+            <circle cx="28" cy="28" r="2.5" fill="currentColor" opacity="0.6"/>
+          </svg>
+          <p>Enter parameters and calculate</p>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="results">
+
+          <div class="result-grid">
+            <div class="card-wrap accent">
+              <div class="result-card">
+                <span class="result-label">Effective DPS</span>
+                <span class="result-value" id="valDps">—</span>
+              </div>
+            </div>
+            <div class="card-wrap accent">
+              <div class="result-card">
+                <span class="result-label">Expected / Hit</span>
+                <span class="result-value" id="valExpected">—</span>
+              </div>
+            </div>
+            <div class="card-wrap">
+              <div class="result-card">
+                <span class="result-label">Min Damage</span>
+                <span class="result-value" id="valMin">—</span>
+              </div>
+            </div>
+            <div class="card-wrap">
+              <div class="result-card">
+                <span class="result-label">Max Damage</span>
+                <span class="result-value" id="valMax">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-wrap-outer">
+            <div class="chart-wrap">
+              <p class="chart-header">Simulated Damage per Hit</p>
+              <canvas id="dmgChart" height="220"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
   </div>
+
+  <!-- Footer -->
+  <footer class="forge-footer">
+    <span>© CMG Forge — Free, forever.</span>
+    <a href="https://cmgforge.com">cmgforge.com</a>
+  </footer>
+
+  <!-- Hub back button -->
+  <a href="/" class="hub-back">&#8592; Hub</a>
 
   <script>
     let dmgChart = null;
 
-    const calcBtn   = document.getElementById('calcBtn');
-    const errorMsg  = document.getElementById('errorMsg');
-    const emptyState = document.getElementById('emptyState');
-    const results   = document.getElementById('results');
+    const calcBtn        = document.getElementById('calcBtn');
+    const errorMsg       = document.getElementById('errorMsg');
+    const emptyState     = document.getElementById('emptyState');
+    const results        = document.getElementById('results');
     const formulaSection = document.getElementById('formulaSection');
-    const formulaBox = document.getElementById('formulaBox');
+    const formulaBox     = document.getElementById('formulaBox');
 
     calcBtn.addEventListener('click', async () => {
       errorMsg.classList.remove('visible');
@@ -488,7 +664,6 @@
       emptyState.style.display = 'none';
       results.classList.add('visible');
 
-      // Formula steps
       formulaBox.innerHTML = '';
       data.formula_steps.forEach((line, i) => {
         const el = document.createElement('div');
@@ -498,7 +673,6 @@
       });
       formulaSection.classList.add('visible');
 
-      // Chart
       renderChart(data.simulated_hits);
     }
 
@@ -507,7 +681,7 @@
       const ctx    = document.getElementById('dmgChart').getContext('2d');
 
       if (dmgChart) {
-        dmgChart.data.labels   = labels;
+        dmgChart.data.labels           = labels;
         dmgChart.data.datasets[0].data = hits;
         dmgChart.update();
         return;
@@ -520,10 +694,10 @@
           datasets: [{
             label: 'Damage',
             data: hits,
-            backgroundColor: 'rgba(168,85,247,0.35)',
-            borderColor: '#a855f7',
+            backgroundColor: 'rgba(249,115,22,0.22)',
+            borderColor: '#f97316',
             borderWidth: 1.5,
-            borderRadius: 3,
+            borderRadius: 0,
           }],
         },
         options: {
@@ -532,11 +706,11 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#13151f',
-              borderColor: '#2c3050',
+              backgroundColor: '#0f1120',
+              borderColor: 'rgba(99,102,241,0.3)',
               borderWidth: 1,
-              titleColor: '#4e5570',
-              bodyColor: '#e6eeff',
+              titleColor: '#64748b',
+              bodyColor: '#f1f5f9',
               bodyFont: { family: "'Share Tech Mono', monospace", size: 12 },
               titleFont: { family: "'Rajdhani', sans-serif", size: 11 },
               padding: 10,
@@ -545,22 +719,21 @@
           scales: {
             x: {
               ticks: {
-                color: '#4e5570',
+                color: '#64748b',
                 font: { family: "'Share Tech Mono', monospace", size: 10 },
                 maxRotation: 0,
                 maxTicksLimit: 20,
               },
-              grid: { color: '#1c1f30' },
-              border: { color: '#1c1f30' },
+              grid: { color: 'rgba(99,102,241,0.07)' },
+              border: { color: 'rgba(99,102,241,0.15)' },
             },
             y: {
               ticks: {
-                color: '#4e5570',
+                color: '#64748b',
                 font: { family: "'Share Tech Mono', monospace", size: 10 },
               },
-              grid: { color: '#1c1f30' },
-              border: { color: '#1c1f30' },
-              backgroundColor: '#08090f',
+              grid: { color: 'rgba(99,102,241,0.07)' },
+              border: { color: 'rgba(99,102,241,0.15)' },
             },
           },
         },
@@ -571,16 +744,6 @@
       return Number.isInteger(n) ? n.toString() : parseFloat(n.toFixed(2)).toString();
     }
   </script>
-
-<!-- Hub back button -->
-<a href="/" class="hub-back-btn">&#8592; Hub</a>
-<style>
-  .hub-back-btn { position:fixed; bottom:1.25rem; left:1.25rem; padding:.4rem .9rem;
-    background:rgba(22,22,31,.9); border:1px solid #9b5de5; border-radius:999px;
-    color:#9b5de5; font-family:'Rajdhani',sans-serif; font-size:.85rem; font-weight:600;
-    text-decoration:none; backdrop-filter:blur(6px); z-index:9999; transition:.15s; }
-  .hub-back-btn:hover { background:#9b5de5; color:#fff; }
-</style>
 
 </body>
 </html>
